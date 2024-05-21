@@ -1,6 +1,7 @@
 // SignUpController.java
 package com.example.signup;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +15,9 @@ import javax.validation.Valid;
 @RequestMapping("/signup")
 public class SignUpController {
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping
     public String showSignUpForm(Model model) {
         model.addAttribute("user", new User());
@@ -26,7 +30,7 @@ public class SignUpController {
             return "signup";
         }
 
-        // Add user to the database or perform other actions
+        userRepository.save(user);
 
         return "redirect:/success";
     }
