@@ -1,0 +1,33 @@
+// SignUpController.java
+package com.example.signup;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.validation.Valid;
+
+@Controller
+@RequestMapping("/signup")
+public class SignUpController {
+
+    @GetMapping
+    public String showSignUpForm(Model model) {
+        model.addAttribute("user", new User());
+        return "signup";
+    }
+
+    @PostMapping
+    public String processSignUpForm(@Valid User user, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "signup";
+        }
+
+        // Add user to the database or perform other actions
+
+        return "redirect:/success";
+    }
+}
