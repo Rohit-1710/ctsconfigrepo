@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIP Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+        }
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .container {
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .content {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>SIP Portal</h1>
+        <p>Your gateway to understanding Session Initiation Protocol</p>
+    </header>
+    <nav>
+        <a href="#overview">Overview</a>
+        <a href="#features">Features</a>
+        <a href="#applications">Applications</a>
+        <a href="#resources">Resources</a>
+    </nav>
+    <div class="container">
+        <section id="overview" class="content">
+            <h2>Overview</h2>
+            <p>Session Initiation Protocol (SIP) is a signaling protocol used for initiating, maintaining, and terminating real-time sessions that include voice, video, and messaging applications. SIP is widely used in internet telephony for voice and video calls, as well as in private IP telephone systems.</p>
+        </section>
+        <section id="features" class="content">
+            <h2>Features</h2>
+            <ul>
+                <li>Peer-to-Peer Connectivity: SIP allows direct connection between participants.</li>
+                <li>Flexibility: SIP can be used for a variety of applications including voice, video, and instant messaging.</li>
+                <li>Scalability: SIP can handle a large number of participants and connections simultaneously.</li>
+                <li>Interoperability: SIP works with many different devices and applications, ensuring wide compatibility.</li>
+                <li>Security: SIP supports encryption and authentication methods to ensure secure communication.</li>
+            </ul>
+        </section>
+        <section id="applications" class="content">
+            <h2>Applications</h2>
+            <p>SIP is used in various applications such as:</p>
+            <ul>
+                <li>Internet Telephony: For making voice and video calls over the internet.</li>
+                <li>Unified Communications: Integrating voice, video, messaging, and data services.</li>
+                <li>Instant Messaging: Enabling real-time text communication.</li>
+                <li>Multimedia Distribution: Streaming audio and video content.</li>
+                <li>Conferencing: Facilitating multi-party audio and video conferences.</li>
+            </ul>
+        </section>
+        <section id="resources" class="content">
+            <h2>Resources</h2>
+            <p>For more information about SIP, you can visit the following resources:</p>
+            <ul>
+                <li><a href="https://tools.ietf.org/html/rfc3261" target="_blank">SIP RFC 3261</a></li>
+                <li><a href="https://www.voip-info.org/sip/" target="_blank">VoIP-Info SIP Overview</a></li>
+                <li><a href="https://en.wikipedia.org/wiki/Session_Initiation_Protocol" target="_blank">Wikipedia: Session Initiation Protocol</a></li>
+                <li><a href="https://www.sipforum.org/" target="_blank">SIP Forum</a></li>
+            </ul>
+        </section>
+    </div>
+</body>
+</html>
