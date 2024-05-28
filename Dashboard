@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIP Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .card {
+            margin: 20px 0;
+        }
+        .advertisement {
+            background-color: #e9ecef;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">SIP Dashboard</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Investments</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <!-- Advertisement Section -->
+        <div class="col-md-12">
+            <div class="advertisement">
+                <h4>Special Offer: Get up to 10% more returns on new SIPs!</h4>
+                <p>Invest now and take advantage of this limited-time offer.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- User Investment Details -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Your SIP Investments</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Plan Name</th>
+                                <th>Monthly Investment</th>
+                                <th>Current Value</th>
+                                <th>Growth (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Plan A</td>
+                                <td>$200</td>
+                                <td>$2400</td>
+                                <td>12%</td>
+                            </tr>
+                            <tr>
+                                <td>Plan B</td>
+                                <td>$150</td>
+                                <td>$1800</td>
+                                <td>20%</td>
+                            </tr>
+                            <tr>
+                                <td>Plan C</td>
+                                <td>$100</td>
+                                <td>$1200</td>
+                                <td>15%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Advertisement Section -->
+        <div class="col-md-4">
+            <div class="advertisement">
+                <h5>Discover Top Performing SIPs</h5>
+                <p>Explore the best SIP plans with high returns and low risk.</p>
+                <button class="btn btn-primary">Explore Now</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Performance Chart Section -->
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Investment Performance</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Additional Information Section -->
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Market News</h5>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Market hits an all-time high, boosting SIP returns.</li>
+                        <li>Expert analysis: Why SIP is a safe bet for long-term investors.</li>
+                        <li>Top 5 SIPs to invest in 2024.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('performanceChart').getContext('2d');
+    var performanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+            datasets: [{
+                label: 'Investment Value',
+                data: [2000, 2100, 2200, 2300, 2400, 2500],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
