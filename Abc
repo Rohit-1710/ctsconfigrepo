@@ -1,0 +1,373 @@
+### Project Structure
+```
+src
+ └── main
+     └── java
+         └── com
+             └── example
+                 └── sipportal
+                     ├── SipPortalApplication.java
+                     ├── config
+                     │    └── SecurityConfig.java
+                     ├── controller
+                     │    ├── RegistrationController.java
+                     │    └── LoginController.java
+                     ├── entity
+                     │    ├── User.java
+                     │    ├── Role.java
+                     │    └── Sip.java
+                     ├── repository
+                     │    ├── UserRepository.java
+                     │    ├── RoleRepository.java
+                     │    └── SipRepository.java
+                     └── service
+                          ├── UserService.java
+                          └── SipService.java
+     └── resources
+         ├── templates
+         │    ├── register.html
+         │    └── login.html
+         ├── application.properties
+         └── data.sql
+```
+
+### `SipPortalApplication.java`
+```java
+package com.example.sipportal;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SipPortalApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SipPortalApplication.class, args);
+    }
+}
+```
+
+### `SecurityConfig.java`
+```java
+package com.example.sipportal.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/register", "/login").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user/**").hasRole("USER")
+                .anyRequest().authenticated()
+            .and()
+                .formLogin()
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/user/sips", true)
+                    .permitAll()
+            .and()
+                .logout()
+                    .permitAll();
+    }
+}
+```
+
+### `RegistrationController.java`
+```java
+package com.example.sipportal.controller;
+
+import com.example.sipportal.entity.User;
+import com.example.sipportal.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.validation.Valid;
+
+@Controller
+public class RegistrationController {
+
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("user", new User());
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String registerUser(@Valid @ModelAttribute User user, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "register";
+        }
+        userService.saveUser(user);
+        userService.addRoleToUser(user.getUsername(), "ROLE_USER");
+        return "redirect:/login";
+    }
+}
+```
+
+### `LoginController.java`
+```java
+package com.example.sipportal.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class LoginController {
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+}
+```
+
+### `User.java`
+```java
+package com.example.sipportal.entity;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank
+    @Size(min = 2, max = 20)
+    private String username;
+
+    @NotBlank
+    @Size(min = 2, max = 20)
+    private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> roles = new HashSet<>();
+
+    // getters and setters
+}
+```
+
+### `Role.java`
+```java
+package com.example.sipportal.entity;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+
+    // getters and setters
+}
+```
+
+### `Sip.java`
+```java
+package com.example.sipportal.entity;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Sip {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private String details;
+
+    // getters and setters
+}
+```
+
+### `UserRepository.java`
+```java
+package com.example.sipportal.repository;
+
+import com.example.sipportal.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUsername(String username);
+}
+```
+
+### `RoleRepository.java`
+```java
+package com.example.sipportal.repository;
+
+import com.example.sipportal.entity.Role;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface RoleRepository extends JpaRepository<Role, Long> {
+    Optional<Role> findByName(String name);
+}
+```
+
+### `SipRepository.java`
+```java
+package com.example.sipportal.repository;
+
+import com.example.sipportal.entity.Sip;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface SipRepository extends JpaRepository<Sip, Long> {
+}
+```
+
+### `UserService.java`
+```java
+package com.example.sipportal.service;
+
+import com.example.sipportal.entity.Role;
+import com.example.sipportal.entity.User;
+import com.example.sipportal.repository.RoleRepository;
+import com.example.sipportal.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    public User saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    public void addRoleToUser(String username, String roleName) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        Role role = roleRepository.findByName(roleName).orElseThrow(() -> new RuntimeException("Role not found"));
+        user.getRoles().add(role);
+        userRepository.save(user);
+    }
+}
+```
+
+### `SipService.java`
+```java
+package com.example.sipportal.service;
+
+import com.example.sipportal.entity.Sip;
+import com.example.sipportal.repository.SipRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class SipService {
+
+    @Autowired
+    private SipRepository sipRepository;
+
+    public Sip saveSip(Sip sip) {
+        return sipRepository.save(sip);
+    }
+
+    public List<Sip> getAllSips() {
+        return sipRepository.findAll();
+    }
+}
+```
+
+### `register.html`
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <style>
+        /* Add some basic styling */
+    </style>
+</head>
+<body>
+    <h1>Register</h1>
+    <form th:action="@{/register}" th:object="${user}" method="post">
+        <div>
+            <label>Username:</label>
+            <input type="text" th:field="*{username}" required />
+            <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+        </div>
+        <div>
+            <label>Password:</label>
+            <input type="password" th:field="*{password}" required />
+            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+        </div>
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>
+```
+
+### `login.html`
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <style>
+        /* Add some basic styling */
+    </style>
+</head>
+<body>
