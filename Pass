@@ -1,0 +1,14 @@
+<script>
+        function validateForm() {
+            var passwordInput = document.getElementById("password");
+            var passwordError = document.getElementById("passwordError");
+
+            if (!passwordInput.checkValidity()) {
+                passwordError.textContent = passwordInput.validationMessage;
+                return false;
+            } else {
+                passwordError.textContent = "";
+                return true;
+            }
+        }
+    </script>
